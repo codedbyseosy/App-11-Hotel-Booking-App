@@ -5,7 +5,8 @@ df = pandas.read_csv("hotels.csv", dtype={"id": str}) # dtype loads all the valu
 
 class Hotel:
     def __init__(self, hotel_id):
-        self.hotel_id = hotel_id # 'hotel_id' is a property and 'hotel_id' is an instance variable
+        self.hotel_id = hotel_id # 'self.hotel_id' is a property and 'hotel_id' is an instance variable
+        self.name =  df.loc[df["id"] == self.hotel_id, "name"].squeeze() # get corresponding name for each id
 
     def book(self): 
         """This method books a hotel by changing its availability to no"""
@@ -23,10 +24,17 @@ class Hotel:
 
 class ReservationTicket:
     def __init__(self, customer_name, hotel_object):
-        pass
+        self.customer_name = customer_name # 'self.customer_name' is a property and 'customer_name' is an instance variable
+        self.hotel = hotel_object # 'self.hotel' is a property and 'hotel_object' is an instance variable
+
 
     def generate(self): # 'generate' method
-        content = f"Name of the customer hotel"
+        content = f"""
+        Thank you for your reservation!
+        Here are your booking data:
+        Name: {self.customer_name}
+        Hotel name: {self.hotel.name}
+"""
         return content
 
 print("Hi there! Please see the list of our hotels and their availbility status below")
@@ -37,7 +45,7 @@ hotel = Hotel(hotel_ID) # create an instance of the object/class 'Hotel'
 if hotel.available(): # calling the 'available' method, if hotel.available returns 'True'
     hotel.book() # calling the 'book' method
     name = input("Enter your name: ")
-    reservation_ticket = ReservationTicket(name, hotel) # create an instance of the object/class 'ReservationTicket'
+    reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel) # create an instance of the object/class 'ReservationTicket'
     print(reservation_ticket.generate()) # calling the 'generate' method
 else:
     print("Hotel is not available")
