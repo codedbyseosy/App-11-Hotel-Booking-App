@@ -1,6 +1,8 @@
 import pandas
 
 df = pandas.read_csv("hotels.csv", dtype={"id": str}) # dtype loads all the values in the id col as strings
+df_cards = pandas.read_csv("/Users/eseoseodion/Documents/Python 2023/Visual Code/UDEMY_PROJECTS/app-11/cards.csv",
+                            dtype=str).to_dict(orient="records")# dtype loads all the cols as strings
 
 
 class Hotel:
@@ -36,6 +38,23 @@ class ReservationTicket:
         Hotel name: {self.hotel.name}
 """
         return content
+    
+
+class CreditCard:
+    def __init__(self, number):
+        self.number = number
+    
+
+    def validate(self, expiration, holder, cvc):
+        """This method validates the authencity of the card"""
+        
+        card_data = {"number": self.number, "expiration": expiration, 
+                     "holder": holder, "cvc": cvc}
+        if card_data in df_cards:
+            return True
+        else:
+            return False
+        
 
 print("Hi there! Please see the list of our hotels and their availbility status below")
 print(df)
@@ -43,9 +62,13 @@ hotel_ID = input("Enter the id of the hotel: ")
 hotel = Hotel(hotel_ID) # create an instance of the object/class 'Hotel'
 
 if hotel.available(): # calling the 'available' method, if hotel.available returns 'True'
-    hotel.book() # calling the 'book' method
-    name = input("Enter your name: ")
-    reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel) # create an instance of the object/class 'ReservationTicket'
-    print(reservation_ticket.generate()) # calling the 'generate' method
+    credit_card = CreditCard(number="1234567890123456")
+    if credit_card.validate(expiration="12/26", holder="JOHN SMITH", cvc="123"):
+        hotel.book() # calling the 'book' method
+        name = input("Enter your name: ")
+        reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel) # create an instance of the object/class 'ReservationTicket'
+        print(reservation_ticket.generate()) # calling the 'generate' method
+    else:
+        print("There was a problem with our payment")
 else:
     print("Hotel is not available")
